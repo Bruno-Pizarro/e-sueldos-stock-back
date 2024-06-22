@@ -4,7 +4,7 @@ import { QueryResult } from '../paginate/paginate';
 export interface IProduct {
   name: string;
   description: string;
-  image?: string;
+  image: string;
   userId: Types.ObjectId;
   price: number;
   stock?: Types.ObjectId;

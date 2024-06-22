@@ -2,10 +2,15 @@ import mongoose from 'mongoose';
 import paginate from '../paginate/paginate';
 import toJSON from '../toJSON/toJSON';
 import { IProductDoc, IProductModel } from './product.interfaces';
-import { Stock } from '../stock';
+import Stock from '../stock/stock.model';
+import publisher from '../../rabbitmq/publisher';
 
 const productSchema = new mongoose.Schema<IProductDoc, IProductModel>(
   {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: mongoose.Types.ObjectId,
+    },
     name: {
       type: String,
       required: true,
@@ -46,6 +51,19 @@ productSchema.post('save', async function (doc: IProductDoc, next) {
       const stock = await Stock.create({ productId: doc.id });
       doc.set({ stock: stock.id });
       await doc.save();
+      await publisher.publishEvent('stock.create', stock);
+    }
+    next();
+  } catch (error: any) {
+    next(error);
+  }
+});
+
+productSchema.post('deleteOne', async function (doc: IProductDoc, next) {
+  try {
+    if (doc.stock) {
+      const stock = await Stock.deleteOne({ productId: doc.id });
+      await publisher.publishEvent('stock.delete', stock);
     }
     next();
   } catch (error: any) {

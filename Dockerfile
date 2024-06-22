@@ -7,12 +7,11 @@ COPY package.json yarn.lock tsconfig.json ecosystem.config.json ./
 
 COPY ./src ./src
 
-RUN ls -a
+RUN yarn install --pure-lockfile
 
-RUN yarn install --pure-lockfile && yarn compile
+RUN yarn compile
 
 # production stage
-
 FROM base as production
 
 WORKDIR /usr/prod/app

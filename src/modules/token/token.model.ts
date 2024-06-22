@@ -5,6 +5,10 @@ import { ITokenDoc, ITokenModel } from './token.interfaces';
 
 const tokenSchema = new mongoose.Schema<ITokenDoc, ITokenModel>(
   {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: mongoose.Types.ObjectId,
+    },
     token: {
       type: String,
       required: true,

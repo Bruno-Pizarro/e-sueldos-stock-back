@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import ApiError from '../errors/ApiError';
 import { IStockDoc, UpdateStockBody } from './stock.interfaces';
 import Stock from './stock.model';
+import publisher from '../../rabbitmq/publisher';
 
 /**
  * Get stock by id
@@ -31,6 +32,7 @@ export const updateStockByProductId = async (updateStock: UpdateStockBody[]): Pr
 
       stock.quantity = quantity !== undefined ? quantity : stock.quantity;
       await stock.save();
+      await publisher.publishEvent('stock.update', stock);
       return stock.populate('productId');
     })
   );
@@ -52,5 +54,6 @@ export const buyProduct = async ({ productId, quantity }: UpdateStockBody): Prom
   }
   stock.quantity -= quantity;
   await stock.save();
+  await publisher.publishEvent('stock.update', stock);
   return stock.populate('productId');
 };

@@ -1,8 +1,5 @@
 import express, { Router } from 'express';
-import authRoute from './auth.route';
 import docsRoute from './swagger.route';
-import userRoute from './user.route';
-import productRoute from './product.route';
 import stockRoute from './stock.route';
 import config from '../../config/config';
 
@@ -14,18 +11,6 @@ interface IRoute {
 }
 
 const defaultIRoute: IRoute[] = [
-  {
-    path: '/auth',
-    route: authRoute,
-  },
-  {
-    path: '/users',
-    route: userRoute,
-  },
-  {
-    path: '/products',
-    route: productRoute,
-  },
   {
     path: '/stock',
     route: stockRoute,

@@ -6,7 +6,7 @@ services:
       - ./data:/data/db
   
   app:
-    container_name: ts-node-app-dev
+    container_name: ts-node-app-stock-dev
     command: yarn dev -L
 
 volumes:
